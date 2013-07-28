@@ -6,46 +6,56 @@
 };
 var App;
 (function (App) {
+    ///<reference path="property.ts"/>
     ///<reference path="observable.ts"/>
-    ///<reference path="structures.ts"/>
+    ///<reference path="adapter.ts"/>
     (function (Core) {
-        var GameEntity = (function (_super) {
-            __extends(GameEntity, _super);
-            function GameEntity() {
-                _super.apply(this, arguments);
+        var Asset = (function () {
+            function Asset() {
+                this.loaded = new Core.Property().initialize(false);
+                this.path = new Core.Property().initialize("");
+                this.byteSize = new Core.Property().initialize(100);
             }
-            return GameEntity;
-        })(Core.Observable);
-        Core.GameEntity = GameEntity;
+            return Asset;
+        })();
+        Core.Asset = Asset;
 
         var GameObject = (function (_super) {
             __extends(GameObject, _super);
-            function GameObject() {
-                _super.apply(this, arguments);
+            function GameObject(object) {
+                _super.call(this);
+
+                this.object = object;
+
+                this.position = new Core.Property().initialize(null, this.onPositionChanged);
+
+                this.rotation = new Core.Property().initialize(null, this.onRotationChanged);
+
+                this.scale = new Core.Property().initialize(null, this.onScaleChanged);
             }
-            GameObject.prototype.position = function (point) {
-                return null;
+            GameObject.prototype.onPositionChanged = function (oldPosition, newPosition) {
+                this.object.position = newPosition;
             };
 
-            GameObject.prototype.rotation = function (rotation) {
-                return null;
+            GameObject.prototype.onRotationChanged = function (oldRotation, newRotation) {
+                this.object.rotation = newRotation;
             };
 
-            GameObject.prototype.scale = function (scale) {
-                return null;
+            GameObject.prototype.onScaleChanged = function (oldScale, newScale) {
+                this.object.scale = newScale;
             };
             return GameObject;
-        })(GameEntity);
+        })(Core.Observable);
         Core.GameObject = GameObject;
 
-        var AnimatableObject = (function (_super) {
-            __extends(AnimatableObject, _super);
-            function AnimatableObject() {
-                _super.apply(this, arguments);
+        var LoadableGameObject = (function (_super) {
+            __extends(LoadableGameObject, _super);
+            function LoadableGameObject() {
+                _super.call(this, null);
             }
-            return AnimatableObject;
+            return LoadableGameObject;
         })(GameObject);
-        Core.AnimatableObject = AnimatableObject;
+        Core.LoadableGameObject = LoadableGameObject;
     })(App.Core || (App.Core = {}));
     var Core = App.Core;
 })(App || (App = {}));

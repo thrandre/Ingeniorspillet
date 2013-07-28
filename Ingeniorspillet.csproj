@@ -18,10 +18,12 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="app\controllers\boardController.ts" />
-    <Content Include="app\core\assets.ts" />
+    <Content Include="app\controllers\controllers.ts" />
+    <Content Include="app\core\adapter.ts" />
+    <Content Include="app\core\core.ts" />
     <Content Include="app\core\objects.ts" />
-    <Content Include="app\core\structures.ts" />
-    <Content Include="app\core\types.ts" />
+    <Content Include="app\core\promise.ts" />
+    <Content Include="app\core\property.ts" />
     <Content Include="app\core\utils.ts" />
     <Content Include="app\lib\three.min.js" />
     <Content Include="app\core\observable.ts" />

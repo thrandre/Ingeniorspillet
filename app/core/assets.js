@@ -1,13 +1,13 @@
 ﻿var App;
 (function (App) {
-    ///<reference path="types.ts"/>
+    ///<reference path="property.ts"/>
     ///<reference path="utils.ts"/>
     (function (Core) {
         var Asset = (function () {
             function Asset() {
-                this.loaded = new Core.Property().init(false);
-                this.path = new Core.Property().init("/root/path");
-                this.byteSize = new Core.Property().init(100);
+                this.loaded = new Core.Property().initialize(false);
+                this.path = new Core.Property().initialize("");
+                this.byteSize = new Core.Property().initialize(100);
             }
             return Asset;
         })();
