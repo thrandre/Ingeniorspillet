@@ -1,4 +1,4 @@
-﻿module App.Core {
+﻿module App.Core.Deferreds {
 	export function when(...promises: Promise[]): Promise {
 		var allDone = new Deferred();
 		var results = [];

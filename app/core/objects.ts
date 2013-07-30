@@ -1,22 +1,22 @@
 ﻿///<reference path="property.ts"/>
 ///<reference path="observable.ts"/>
-///<reference path="adapter.ts"/>
+///<reference path="adapterInterfaces.ts"/>
 
 module App.Core {
 	export interface IMoveable {
-		position: (point?: Point) => Point;
+		position: IPoint3D;
 	}
 
 	export interface IRotatable {
-		rotation: (rotatation?: Rotation) => Rotation;
+		rotation: IRotation3D;
 	}
 
 	export interface IScaleable {
-		scale: (scale?: Scale) => Scale;
+		scale: IScale3D;
 	}
 
 	export interface ILoadable {
-		load(): Promise;
+		load(): Deferreds.Promise;
 	}
 
 	export interface IAnimatable {
@@ -26,56 +26,30 @@ module App.Core {
 	export interface IMapable {
 	}
 
-	export class Asset {
-		loaded: (value?: boolean) => boolean;
-		path: (value?: string) => string;
-		byteSize: (value?: number) => number;
-
-		constructor() {
-			this.loaded = new Property<boolean>().initialize(false);
-			this.path = new Property<string>().initialize("");
-			this.byteSize = new Property<number>().initialize(100);
-		}
+	export interface IAsset {
+		loaded: boolean;
+		path: string;
+		bytesize: number;
 	}
 
-	export class GameObject extends Observable implements IMoveable, IRotatable, IScaleable {
-		object: Object3D;
-
-		position: (point?: Point) => Point;
-		rotation: (rotation?: Rotation) => Rotation;
-		scale: (scale?: Scale) => Scale;
-
-		private onPositionChanged(oldPosition: Point, newPosition: Point) {
-			this.object.position = newPosition;
+	export class Asset implements IAsset {
+		private _loaded: boolean;
+		public get loaded() {
+			return this._loaded;
 		}
 
-		private onRotationChanged(oldRotation: Rotation, newRotation: Rotation) {
-			this.object.rotation = newRotation;
+		private _path: string;
+		public get path() {
+			return this._path;
 		}
 
-		private onScaleChanged(oldScale: Scale, newScale: Scale) {
-			this.object.scale = newScale;
+		private _bytesize: number;
+		public get bytesize() {
+			return this._bytesize;
 		}
 
-		constructor(object: Object3D) {
-			super();
-			
-			this.object = object;
-			
-			this.position = new Property<Point>()
-				.initialize(null, this.onPositionChanged);
-			
-			this.rotation = new Property<Rotation>()
-				.initialize(null, this.onRotationChanged);
-			
-			this.scale = new Property<Scale>()
-				.initialize(null, this.onScaleChanged);
-		}
-	}
-
-	export class LoadableGameObject extends GameObject implements ILoadable {
 		constructor() {
-			super(null);
+			this._loaded = true;
 		}
 	}
 }

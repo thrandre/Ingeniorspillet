@@ -2,10 +2,7 @@
 (function (App) {
     (function (Core) {
         function NotNullOrEmpty(val) {
-            if (typeof val !== "undefined") {
-                return true;
-            }
-            return false;
+            return true;
         }
         Core.NotNullOrEmpty = NotNullOrEmpty;
     })(App.Core || (App.Core = {}));

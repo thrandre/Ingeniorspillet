@@ -1,11 +1,95 @@
 ﻿var App;
 (function (App) {
     (function (Core) {
-        function NotNullOrEmpty(val) {
-            if (typeof val !== "undefined") {
-                return true;
+        var Factory = (function () {
+            function Factory() {
             }
-            return false;
+            Factory.register = function (iinterface) {
+                Factory.directory[iinterface.interfaceName] = iinterface.classReference;
+            };
+
+            Factory.create = function (iinterface, args) {
+                var ref = Factory.directory[iinterface.interfaceName];
+
+                return ref.createInstance.apply(this, args.arguments);
+            };
+            Factory.directory = {};
+            return Factory;
+        })();
+        Core.Factory = Factory;
+    })(App.Core || (App.Core = {}));
+    var Core = App.Core;
+})(App || (App = {}));
+var App;
+(function (App) {
+    (function (Core) {
+        var IIPoint3DArgs = (function () {
+            function IIPoint3DArgs(x, y, z) {
+                this.arguments = arguments;
+            }
+            return IIPoint3DArgs;
+        })();
+        Core.IIPoint3DArgs = IIPoint3DArgs;
+
+        var IIPoint3D = (function () {
+            function IIPoint3D(classReference) {
+                this.classReference = classReference;
+                this.interfaceName = "IIPoint3D";
+            }
+            return IIPoint3D;
+        })();
+        Core.IIPoint3D = IIPoint3D;
+    })(App.Core || (App.Core = {}));
+    var Core = App.Core;
+})(App || (App = {}));
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var App;
+(function (App) {
+    (function (ThreeAdapter) {
+        var Core = App.Core;
+
+        var Point3D = (function (_super) {
+            __extends(Point3D, _super);
+            function Point3D() {
+                _super.apply(this, arguments);
+            }
+            Point3D.createInstance = function (x, y, z) {
+                return new Point3D(x, y, z);
+            };
+            return Point3D;
+        })(THREE.Vector3);
+        ThreeAdapter.Point3D = Point3D;
+
+        var Rotation3D = (function (_super) {
+            __extends(Rotation3D, _super);
+            function Rotation3D() {
+                _super.apply(this, arguments);
+            }
+            return Rotation3D;
+        })(THREE.Vector3);
+        ThreeAdapter.Rotation3D = Rotation3D;
+
+        var Scale3D = (function (_super) {
+            __extends(Scale3D, _super);
+            function Scale3D() {
+                _super.apply(this, arguments);
+            }
+            return Scale3D;
+        })(THREE.Vector3);
+        ThreeAdapter.Scale3D = Scale3D;
+    })(App.ThreeAdapter || (App.ThreeAdapter = {}));
+    var ThreeAdapter = App.ThreeAdapter;
+})(App || (App = {}));
+var App;
+(function (App) {
+    (function (Core) {
+        function NotNullOrEmpty(val) {
+            return true;
         }
         Core.NotNullOrEmpty = NotNullOrEmpty;
     })(App.Core || (App.Core = {}));
@@ -77,187 +161,143 @@ var App;
 var App;
 (function (App) {
     (function (Core) {
-        function when() {
-            var promises = [];
-            for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                promises[_i] = arguments[_i + 0];
-            }
-            var allDone = new Deferred();
-            var results = [];
-            var remaining = promises.length;
+        (function (Deferreds) {
+            function when() {
+                var promises = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    promises[_i] = arguments[_i + 0];
+                }
+                var allDone = new Deferred();
+                var results = [];
+                var remaining = promises.length;
 
-            promises.map(function (p, i) {
-                p.then(function () {
-                    var args = [];
-                    for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                        args[_i] = arguments[_i + 0];
-                    }
-                    results[i] = args;
-                    remaining--;
-                    if (!remaining && allDone.status() !== "rejected") {
-                        allDone.resolve.apply(allDone, results);
-                    }
-                }, function () {
-                    allDone.reject();
+                promises.map(function (p, i) {
+                    p.then(function () {
+                        var args = [];
+                        for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                            args[_i] = arguments[_i + 0];
+                        }
+                        results[i] = args;
+                        remaining--;
+                        if (!remaining && allDone.status() !== "rejected") {
+                            allDone.resolve.apply(allDone, results);
+                        }
+                    }, function () {
+                        allDone.reject();
+                    });
                 });
-            });
 
-            if (!remaining) {
-                allDone.resolve.apply(allDone, results);
-            }
-
-            return allDone.promise();
-        }
-        Core.when = when;
-
-        var Promise = (function () {
-            function Promise(deferred) {
-                this.deferred = deferred;
-            }
-            Promise.prototype.then = function (callback, error) {
-                return this.deferred.then(callback, error);
-            };
-
-            Promise.prototype.status = function () {
-                return this.deferred.status();
-            };
-            Promise.prototype.result = function () {
-                return this.deferred.result();
-            };
-            return Promise;
-        })();
-        Core.Promise = Promise;
-
-        var Deferred = (function () {
-            function Deferred() {
-                this.resolved = [];
-                this.rejected = [];
-                this._promise = new Promise(this);
-                this._status = "in progress";
-            }
-            Deferred.prototype.promise = function () {
-                return this._promise;
-            };
-            Deferred.prototype.status = function () {
-                return this._status;
-            };
-            Deferred.prototype.result = function () {
-                return this._result;
-            };
-
-            Deferred.prototype.resolve = function () {
-                var result = [];
-                for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                    result[_i] = arguments[_i + 0];
-                }
-                this._result = result;
-                this.notify(this.resolved, result);
-                this.resolved = [];
-                this._status = "resolved";
-                return this;
-            };
-
-            Deferred.prototype.reject = function () {
-                var result = [];
-                for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                    result[_i] = arguments[_i + 0];
-                }
-                this._result = result;
-                this.notify(this.rejected, result);
-                this.rejected = [];
-                this._status = "rejected";
-                return this;
-            };
-
-            Deferred.prototype.then = function (callback, error) {
-                var d = new Deferred();
-
-                this.resolved.push(this.wrap(d, callback, "resolve"));
-                this.rejected.push(this.wrap(d, error, "reject"));
-
-                if (this._status === "resolved") {
-                    this.resolve.apply(this, this.result);
-                } else if (this._status === "rejected") {
-                    this.reject.apply(this, this.result);
+                if (!remaining) {
+                    allDone.resolve.apply(allDone, results);
                 }
 
-                return d.promise();
-            };
+                return allDone.promise();
+            }
+            Deferreds.when = when;
 
-            Deferred.prototype.wrap = function (d, f, method) {
-                return function () {
-                    var args = [];
-                    for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                        args[_i] = arguments[_i + 0];
-                    }
-                    var result = f.apply(f, args);
-                    if (result && result instanceof Promise) {
-                        result.then(function () {
-                            d.resolve();
-                        }, function () {
-                            d.reject();
-                        });
-                    } else {
-                        d[method].apply(d, typeof result === "array" ? result : [result]);
-                    }
+            var Promise = (function () {
+                function Promise(deferred) {
+                    this.deferred = deferred;
+                }
+                Promise.prototype.then = function (callback, error) {
+                    return this.deferred.then(callback, error);
                 };
-            };
 
-            Deferred.prototype.notify = function (funcs, result) {
-                funcs.map(function (f) {
-                    f.apply(f, result);
-                });
-            };
-            return Deferred;
-        })();
-        Core.Deferred = Deferred;
-    })(App.Core || (App.Core = {}));
-    var Core = App.Core;
-})(App || (App = {}));
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var App;
-(function (App) {
-    (function (Core) {
-        var Point = (function (_super) {
-            __extends(Point, _super);
-            function Point() {
-                _super.apply(this, arguments);
-            }
-            return Point;
-        })(THREE.Vector3);
-        Core.Point = Point;
+                Promise.prototype.status = function () {
+                    return this.deferred.status();
+                };
+                Promise.prototype.result = function () {
+                    return this.deferred.result();
+                };
+                return Promise;
+            })();
+            Deferreds.Promise = Promise;
 
-        var Rotation = (function (_super) {
-            __extends(Rotation, _super);
-            function Rotation() {
-                _super.apply(this, arguments);
-            }
-            return Rotation;
-        })(THREE.Vector3);
-        Core.Rotation = Rotation;
+            var Deferred = (function () {
+                function Deferred() {
+                    this.resolved = [];
+                    this.rejected = [];
+                    this._promise = new Promise(this);
+                    this._status = "in progress";
+                }
+                Deferred.prototype.promise = function () {
+                    return this._promise;
+                };
+                Deferred.prototype.status = function () {
+                    return this._status;
+                };
+                Deferred.prototype.result = function () {
+                    return this._result;
+                };
 
-        var Scale = (function (_super) {
-            __extends(Scale, _super);
-            function Scale() {
-                _super.apply(this, arguments);
-            }
-            return Scale;
-        })(THREE.Vector3);
-        Core.Scale = Scale;
+                Deferred.prototype.resolve = function () {
+                    var result = [];
+                    for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                        result[_i] = arguments[_i + 0];
+                    }
+                    this._result = result;
+                    this.notify(this.resolved, result);
+                    this.resolved = [];
+                    this._status = "resolved";
+                    return this;
+                };
 
-        var Object3D = (function (_super) {
-            __extends(Object3D, _super);
-            function Object3D() {
-                _super.apply(this, arguments);
-            }
-            return Object3D;
-        })(THREE.Object3D);
-        Core.Object3D = Object3D;
+                Deferred.prototype.reject = function () {
+                    var result = [];
+                    for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                        result[_i] = arguments[_i + 0];
+                    }
+                    this._result = result;
+                    this.notify(this.rejected, result);
+                    this.rejected = [];
+                    this._status = "rejected";
+                    return this;
+                };
+
+                Deferred.prototype.then = function (callback, error) {
+                    var d = new Deferred();
+
+                    this.resolved.push(this.wrap(d, callback, "resolve"));
+                    this.rejected.push(this.wrap(d, error, "reject"));
+
+                    if (this._status === "resolved") {
+                        this.resolve.apply(this, this.result);
+                    } else if (this._status === "rejected") {
+                        this.reject.apply(this, this.result);
+                    }
+
+                    return d.promise();
+                };
+
+                Deferred.prototype.wrap = function (d, f, method) {
+                    return function () {
+                        var args = [];
+                        for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                            args[_i] = arguments[_i + 0];
+                        }
+                        var result = f.apply(f, args);
+                        if (result && result instanceof Promise) {
+                            result.then(function () {
+                                d.resolve();
+                            }, function () {
+                                d.reject();
+                            });
+                        } else {
+                            d[method].apply(d, typeof result === "array" ? result : [result]);
+                        }
+                    };
+                };
+
+                Deferred.prototype.notify = function (funcs, result) {
+                    funcs.map(function (f) {
+                        f.apply(f, result);
+                    });
+                };
+                return Deferred;
+            })();
+            Deferreds.Deferred = Deferred;
+        })(Core.Deferreds || (Core.Deferreds = {}));
+        var Deferreds = Core.Deferreds;
     })(App.Core || (App.Core = {}));
     var Core = App.Core;
 })(App || (App = {}));
@@ -266,50 +306,34 @@ var App;
     (function (Core) {
         var Asset = (function () {
             function Asset() {
-                this.loaded = new Core.Property().initialize(false);
-                this.path = new Core.Property().initialize("");
-                this.byteSize = new Core.Property().initialize(100);
+                this._loaded = true;
             }
+            Object.defineProperty(Asset.prototype, "loaded", {
+                get: function () {
+                    return this._loaded;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Asset.prototype, "path", {
+                get: function () {
+                    return this._path;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Asset.prototype, "bytesize", {
+                get: function () {
+                    return this._bytesize;
+                },
+                enumerable: true,
+                configurable: true
+            });
             return Asset;
         })();
         Core.Asset = Asset;
-
-        var GameObject = (function (_super) {
-            __extends(GameObject, _super);
-            function GameObject(object) {
-                _super.call(this);
-
-                this.object = object;
-
-                this.position = new Core.Property().initialize(null, this.onPositionChanged);
-
-                this.rotation = new Core.Property().initialize(null, this.onRotationChanged);
-
-                this.scale = new Core.Property().initialize(null, this.onScaleChanged);
-            }
-            GameObject.prototype.onPositionChanged = function (oldPosition, newPosition) {
-                this.object.position = newPosition;
-            };
-
-            GameObject.prototype.onRotationChanged = function (oldRotation, newRotation) {
-                this.object.rotation = newRotation;
-            };
-
-            GameObject.prototype.onScaleChanged = function (oldScale, newScale) {
-                this.object.scale = newScale;
-            };
-            return GameObject;
-        })(Core.Observable);
-        Core.GameObject = GameObject;
-
-        var LoadableGameObject = (function (_super) {
-            __extends(LoadableGameObject, _super);
-            function LoadableGameObject() {
-                _super.call(this, null);
-            }
-            return LoadableGameObject;
-        })(GameObject);
-        Core.LoadableGameObject = LoadableGameObject;
     })(App.Core || (App.Core = {}));
     var Core = App.Core;
 })(App || (App = {}));
@@ -339,5 +363,9 @@ var Core = App.Core;
 var Controllers = App.Controllers;
 
 window.onload = function () {
-    var g = new Core.LoadableGameObject();
+    Core.Factory.register(new Core.IIPoint3D(App.ThreeAdapter.Point3D));
+
+    var test = Core.Factory.create(new Core.IIPoint3D(), new Core.IIPoint3DArgs(2, 4, 6));
+
+    console.log(test);
 };
