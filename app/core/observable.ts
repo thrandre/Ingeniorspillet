@@ -30,13 +30,15 @@
 		
 		notify(observer: IObserver, event: IObservableEvent): void {
 			this._observers.push(
-				new ObserverSubscription(observer, event));
+				new ObserverSubscription(observer, event)
+			);
 		}
 
 		on(event: IObservableEvent): void {
 			this._observers.forEach(
 				(observerSubscription: IObserverSubscription) =>
-					observerSubscription.observer.observe(event, null));
+					observerSubscription.observer.observe(event, null)
+			);
 		}
 	}
 }

@@ -14,7 +14,7 @@
                 var ref = Factory.directory[iInterface.interfaceName];
 
                 if (!Core.DefinedAndNotNull(ref)) {
-                    return null;
+                    throw "IoC container not initialized.";
                 }
 
                 var arguments = null;
@@ -31,4 +31,4 @@
     })(App.Core || (App.Core = {}));
     var Core = App.Core;
 })(App || (App = {}));
-//@ sourceMappingURL=Factory.js.map
+//# sourceMappingURL=Factory.js.map

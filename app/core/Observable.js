@@ -36,4 +36,3 @@
     })(App.Core || (App.Core = {}));
     var Core = App.Core;
 })(App || (App = {}));
-//@ sourceMappingURL=observable.js.map

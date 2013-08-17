@@ -13,7 +13,7 @@ module App.Core {
 			var ref = Factory.directory[iInterface.interfaceName];
 			
 			if (!DefinedAndNotNull(ref)) {
-				return null;
+				throw "IoC container not initialized.";
 			}
 
 			var arguments = null;

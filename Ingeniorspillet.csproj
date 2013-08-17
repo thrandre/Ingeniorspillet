@@ -21,8 +21,13 @@
     <Content Include="App\Core\AdapterInterfaces.ts" />
     <Content Include="App\Core\Factory.ts" />
     <Content Include="App\Core\Objects.ts" />
+    <TypeScriptCompile Include="App\Core\Primitives.ts" />
     <Content Include="App\Core\Promise.ts" />
     <Content Include="App\Core\Utils.ts" />
+    <TypeScriptCompile Include="App\Game\GameEntity.ts" />
+    <TypeScriptCompile Include="App\Game\Scene.ts" />
+    <TypeScriptCompile Include="App\Typings\JQuery.d.ts" />
+    <Content Include="Lib\jquery.min.js" />
     <Content Include="Lib\three.min.js" />
     <Content Include="App\Core\Observable.ts" />
     <Content Include="App\Adapters\Three\ThreeAdapter.ts" />
@@ -34,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="App\App.ts" />
+    <TypeScriptCompile Include="App\Game\GameEntityBase.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="web.config" />
@@ -44,9 +50,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App\GameObjects\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
