@@ -1,16 +1,27 @@
-﻿module App.Core {
+﻿///<reference path="Utils.ts"/>
+///<reference path="AdapterInterfaces.ts"/>
+
+module App.Core {
 	export class Factory {
-		static directory = {};
+		static directory: {[key: string]: any} = {};
 		
-		static register(iinterface: IInterface): void {
-			Factory.directory[iinterface.interfaceName] = iinterface.classReference;
+		static register(iInterface: IInterface): void {
+			Factory.directory[iInterface.interfaceName] = iInterface.classReference;
 		}
 
-		static create<T>(iinterface: IInterface, args?: IIArgs): T {
-			var ref = Factory
-				.directory[iinterface.interfaceName];
+		static create<T>(iInterface: IInterface, args?: IIArgs): T {
+			var ref = Factory.directory[iInterface.interfaceName];
 			
-			return <T>ref.createInstance.apply(this, args.arguments);
+			if (!DefinedAndNotNull(ref)) {
+				return null;
+			}
+
+			var arguments = null;
+			if (DefinedAndNotNull(args, "$.arguments")) {
+				arguments = args.arguments;
+			}
+			
+			return <T> ref.createInstance.apply(this, arguments);
 		}
 	}
 }

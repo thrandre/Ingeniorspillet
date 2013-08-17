@@ -1,17 +1,28 @@
 ﻿var App;
 (function (App) {
+    ///<reference path="Utils.ts"/>
+    ///<reference path="AdapterInterfaces.ts"/>
     (function (Core) {
         var Factory = (function () {
             function Factory() {
             }
-            Factory.register = function (iinterface) {
-                Factory.directory[iinterface.interfaceName] = iinterface.classReference;
+            Factory.register = function (iInterface) {
+                Factory.directory[iInterface.interfaceName] = iInterface.classReference;
             };
 
-            Factory.create = function (iinterface, args) {
-                var ref = Factory.directory[iinterface.interfaceName];
+            Factory.create = function (iInterface, args) {
+                var ref = Factory.directory[iInterface.interfaceName];
 
-                return ref.createInstance.apply(this, args.arguments);
+                if (!Core.DefinedAndNotNull(ref)) {
+                    return null;
+                }
+
+                var arguments = null;
+                if (Core.DefinedAndNotNull(args, "$.arguments")) {
+                    arguments = args.arguments;
+                }
+
+                return ref.createInstance.apply(this, arguments);
             };
             Factory.directory = {};
             return Factory;

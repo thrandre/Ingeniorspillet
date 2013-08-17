@@ -17,26 +17,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app.css" />
-    <Content Include="app\controllers\boardController.ts" />
-    <Content Include="app\controllers\controllers.ts" />
-    <Content Include="app\core\adapterInterfaces.ts" />
-    <Content Include="app\core\core.ts" />
-    <Content Include="app\core\Factory.ts" />
-    <Content Include="app\core\objects.ts" />
-    <Content Include="app\core\promise.ts" />
-    <Content Include="app\core\property.ts" />
-    <Content Include="app\core\utils.ts" />
-    <Content Include="app\lib\three.min.js" />
-    <Content Include="app\core\observable.ts" />
-    <Content Include="app\threeAdapter.ts" />
-    <Content Include="app\typings\three.d.ts" />
+    <Content Include="App\Controllers\BoardController.ts" />
+    <Content Include="App\Core\AdapterInterfaces.ts" />
+    <Content Include="App\Core\Factory.ts" />
+    <Content Include="App\Core\Objects.ts" />
+    <Content Include="App\Core\Promise.ts" />
+    <Content Include="App\Core\Utils.ts" />
+    <Content Include="Lib\three.min.js" />
+    <Content Include="App\Core\Observable.ts" />
+    <Content Include="App\Adapters\Three\ThreeAdapter.ts" />
+    <Content Include="App\Typings\Three.d.ts" />
     <Content Include="default.htm" />
-    <Content Include="app\app.js">
-      <DependentUpon>app.ts</DependentUpon>
+    <Content Include="App\app.js">
+      <DependentUpon>App.ts</DependentUpon>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app\app.ts" />
+    <TypeScriptCompile Include="App\App.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="web.config" />
@@ -48,7 +45,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="app\gameObjects\" />
+    <Folder Include="App\GameObjects\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -91,6 +88,6 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" />
   <PropertyGroup>
-    <PostBuildEvent>tsc "$(SolutionDir)app\app.ts" -out "$(SolutionDir)app\app.js" --target ES5</PostBuildEvent>
+    <PostBuildEvent>tsc "$(SolutionDir)app\app.ts" -out "$(SolutionDir)App\App.js" --target ES5</PostBuildEvent>
   </PropertyGroup>
 </Project>
