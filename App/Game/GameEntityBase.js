@@ -1,6 +1,6 @@
 var App;
 (function (App) {
-    ///<reference path="../Core/AdapterInterfaces.ts"/>
+    ///<reference path="../Core/Interfaces.ts"/>
     (function (Game) {
         var Core = App.Core;
 

@@ -6,7 +6,7 @@ var __extends = this.__extends || function (d, b) {
 };
 var App;
 (function (App) {
-    ///<reference path="../Core/AdapterInterfaces.ts"/>
+    ///<reference path="../Core/Interfaces.ts"/>
     ///<reference path="GameEntityBase.ts"/>
     (function (Game) {
         var Core = App.Core;

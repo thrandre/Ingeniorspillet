@@ -1,4 +1,4 @@
-///<reference path="../Core/AdapterInterfaces.ts"/>
+///<reference path="../Core/Interfaces.ts"/>
 ///<reference path="GameEntityBase.ts"/>
 
 module App.Game {

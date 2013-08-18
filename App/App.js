@@ -52,67 +52,7 @@ var App;
 })(App || (App = {}));
 var App;
 (function (App) {
-    ///<reference path="Primitives.ts"/>
     (function (Core) {
-        var IIRendererArgs = (function () {
-            function IIRendererArgs() {
-                this.arguments = arguments;
-            }
-            return IIRendererArgs;
-        })();
-        Core.IIRendererArgs = IIRendererArgs;
-
-        var IIRenderer = (function () {
-            function IIRenderer(classReference) {
-                this.classReference = classReference;
-                this.interfaceName = "IRenderer";
-            }
-            return IIRenderer;
-        })();
-        Core.IIRenderer = IIRenderer;
-
-        var IISceneArgs = (function () {
-            function IISceneArgs() {
-                this.arguments = arguments;
-            }
-            return IISceneArgs;
-        })();
-        Core.IISceneArgs = IISceneArgs;
-
-        var IIScene = (function () {
-            function IIScene(classReference) {
-                this.classReference = classReference;
-                this.interfaceName = "IScene";
-            }
-            return IIScene;
-        })();
-        Core.IIScene = IIScene;
-
-        var IICameraArgs = (function () {
-            function IICameraArgs(fov, aspect, near, far) {
-                this.arguments = arguments;
-            }
-            return IICameraArgs;
-        })();
-        Core.IICameraArgs = IICameraArgs;
-
-        var IICamera = (function () {
-            function IICamera(classReference) {
-                this.classReference = classReference;
-                this.interfaceName = "ICamera";
-            }
-            return IICamera;
-        })();
-        Core.IICamera = IICamera;
-
-        var IIVector3DArgs = (function () {
-            function IIVector3DArgs(x, y, z) {
-                this.arguments = arguments;
-            }
-            return IIVector3DArgs;
-        })();
-        Core.IIVector3DArgs = IIVector3DArgs;
-
         var IIVector3D = (function () {
             function IIVector3D(classReference) {
                 this.classReference = classReference;
@@ -121,14 +61,6 @@ var App;
             return IIVector3D;
         })();
         Core.IIVector3D = IIVector3D;
-
-        var IIPoint3DArgs = (function () {
-            function IIPoint3DArgs(x, y, z) {
-                this.arguments = arguments;
-            }
-            return IIPoint3DArgs;
-        })();
-        Core.IIPoint3DArgs = IIPoint3DArgs;
 
         var IIPoint3D = (function () {
             function IIPoint3D(classReference) {
@@ -139,14 +71,6 @@ var App;
         })();
         Core.IIPoint3D = IIPoint3D;
 
-        var IIRotation3DArgs = (function () {
-            function IIRotation3DArgs(x, y, z) {
-                this.arguments = arguments;
-            }
-            return IIRotation3DArgs;
-        })();
-        Core.IIRotation3DArgs = IIRotation3DArgs;
-
         var IIRotation3D = (function () {
             function IIRotation3D(classReference) {
                 this.classReference = classReference;
@@ -155,14 +79,6 @@ var App;
             return IIRotation3D;
         })();
         Core.IIRotation3D = IIRotation3D;
-
-        var IIScale3DArgs = (function () {
-            function IIScale3DArgs(x, y, z) {
-                this.arguments = arguments;
-            }
-            return IIScale3DArgs;
-        })();
-        Core.IIScale3DArgs = IIScale3DArgs;
 
         var IIScale3D = (function () {
             function IIScale3D(classReference) {
@@ -173,13 +89,6 @@ var App;
         })();
         Core.IIScale3D = IIScale3D;
 
-        var IIObject3DArgs = (function () {
-            function IIObject3DArgs() {
-            }
-            return IIObject3DArgs;
-        })();
-        Core.IIObject3DArgs = IIObject3DArgs;
-
         var IIObject3D = (function () {
             function IIObject3D(classReference) {
                 this.classReference = classReference;
@@ -188,39 +97,84 @@ var App;
             return IIObject3D;
         })();
         Core.IIObject3D = IIObject3D;
+
+        var IIRenderer = (function () {
+            function IIRenderer(classReference) {
+                this.classReference = classReference;
+                this.interfaceName = "IRenderer";
+            }
+            return IIRenderer;
+        })();
+        Core.IIRenderer = IIRenderer;
+
+        var IIScene = (function () {
+            function IIScene(classReference) {
+                this.classReference = classReference;
+                this.interfaceName = "IScene";
+            }
+            return IIScene;
+        })();
+        Core.IIScene = IIScene;
+
+        var IICamera = (function () {
+            function IICamera(classReference) {
+                this.classReference = classReference;
+                this.interfaceName = "ICamera";
+            }
+            return IICamera;
+        })();
+        Core.IICamera = IICamera;
     })(App.Core || (App.Core = {}));
     var Core = App.Core;
 })(App || (App = {}));
 var App;
 (function (App) {
     ///<reference path="Utils.ts"/>
-    ///<reference path="AdapterInterfaces.ts"/>
+    ///<reference path="Interfaces.ts"/>
+    ///<reference path="Locators.ts"/>
     (function (Core) {
-        var Factory = (function () {
-            function Factory() {
+        var IoCContainer = (function () {
+            function IoCContainer() {
             }
-            Factory.register = function (iInterface) {
-                Factory.directory[iInterface.interfaceName] = iInterface.classReference;
+            IoCContainer.register = function (iInterface) {
+                var ref = iInterface.classReference;
+                Container.directory[iInterface.interfaceName] = ref;
+
+                return new ContainerInstantiator(ref);
             };
 
-            Factory.create = function (iInterface, args) {
-                var ref = Factory.directory[iInterface.interfaceName];
+            IoCContainer.resolve = function (iInterface) {
+                var ref = Container.directory[iInterface.interfaceName];
 
                 if (!Core.DefinedAndNotNull(ref)) {
                     throw "IoC container not initialized.";
                 }
 
-                var arguments = null;
-                if (Core.DefinedAndNotNull(args, "$.arguments")) {
-                    arguments = args.arguments;
+                return new ContainerInstantiator(ref);
+            };
+            IoCContainer.directory = {};
+            return IoCContainer;
+        })();
+        Core.IoCContainer = IoCContainer;
+
+        var ContainerInstantiator = (function () {
+            function ContainerInstantiator(container) {
+                this._container = container;
+            }
+            ContainerInstantiator.prototype.create = function () {
+                var params = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    params[_i] = arguments[_i + 0];
+                }
+                if (!Core.DefinedAndNotNull(this._container, "$.createInstance")) {
+                    throw "The container does not implement a static createInstance method. Unable to create instance.";
                 }
 
-                return ref.createInstance.apply(this, arguments);
+                return this._container.createInstance.apply(this, params);
             };
-            Factory.directory = {};
-            return Factory;
+            return ContainerInstantiator;
         })();
-        Core.Factory = Factory;
+        Core.ContainerInstantiator = ContainerInstantiator;
     })(App.Core || (App.Core = {}));
     var Core = App.Core;
 })(App || (App = {}));
@@ -234,7 +188,7 @@ var App;
 (function (App) {
     (function (Adapters) {
         ///<reference path="../../Typings/Three.d.ts"/>
-        ///<reference path="../../Core/AdapterInterfaces.ts"/>
+        ///<reference path="../../Core/Interfaces.ts"/>
         (function (ThreeAdapter) {
             var Core = App.Core;
 
@@ -455,7 +409,7 @@ var App;
 })(App || (App = {}));
 var App;
 (function (App) {
-    ///<reference path="../Core/AdapterInterfaces.ts"/>
+    ///<reference path="../Core/Interfaces.ts"/>
     (function (Game) {
         var Core = App.Core;
 
@@ -490,7 +444,7 @@ var App;
 })(App || (App = {}));
 var App;
 (function (App) {
-    ///<reference path="../Core/AdapterInterfaces.ts"/>
+    ///<reference path="../Core/Interfaces.ts"/>
     ///<reference path="GameEntityBase.ts"/>
     (function (Game) {
         var Core = App.Core;
@@ -542,52 +496,35 @@ var App;
     var Game = App.Game;
 })(App || (App = {}));
 ///<reference path="Typings/JQuery.d.ts"/>
-///<reference path="Core/Factory.ts"/>
+///<reference path="Core/IoCContainer.ts"/>
 ///<reference path="Adapters/Three/ThreeAdapter.ts"/>
 ///<reference path="Game/GameEntity.ts"/>
 var Core = App.Core;
+var Container = App.Core.IoCContainer;
 var ThreeAdapter = App.Adapters.ThreeAdapter;
 var Game = App.Game;
 
 function bootstrapAdapter() {
-    Core.Factory.register(new Core.IIRenderer(ThreeAdapter.WebGlRenderer));
+    Container.register(new Core.IIRenderer(ThreeAdapter.WebGlRenderer));
 
-    Core.Factory.register(new Core.IICamera(ThreeAdapter.PerspectiveCamera));
+    Container.register(new Core.IICamera(ThreeAdapter.PerspectiveCamera));
 
-    Core.Factory.register(new Core.IIScene(ThreeAdapter.Scene));
+    Container.register(new Core.IIScene(ThreeAdapter.Scene));
 
-    Core.Factory.register(new Core.IIVector3D(ThreeAdapter.Vector3D));
+    Container.register(new Core.IIVector3D(ThreeAdapter.Vector3D));
 
-    Core.Factory.register(new Core.IIPoint3D(ThreeAdapter.Point3D));
+    Container.register(new Core.IIPoint3D(ThreeAdapter.Point3D));
 
-    Core.Factory.register(new Core.IIRotation3D(ThreeAdapter.Rotation3D));
+    Container.register(new Core.IIRotation3D(ThreeAdapter.Rotation3D));
 
-    Core.Factory.register(new Core.IIScale3D(ThreeAdapter.Scale3D));
+    Container.register(new Core.IIScale3D(ThreeAdapter.Scale3D));
 
-    Core.Factory.register(new Core.IIObject3D(ThreeAdapter.Object3D));
+    Container.register(new Core.IIObject3D(ThreeAdapter.Object3D));
 }
-
-var camera;
-var scene;
-var renderer;
 
 $(function () {
     bootstrapAdapter();
-
-    camera = Core.Factory.create(new Core.IICamera(), new Core.IICameraArgs(35, 1920 / 1080, 1, 10000));
-
-    scene = Core.Factory.create(new Core.IIScene());
-
-    renderer = Core.Factory.create(new Core.IIRenderer());
-
-    renderer.size = new Core.Rectangle(1920, 1080);
-
-    $(document.body).append(renderer.domElement);
-
-    animate();
+    var camera = Container.resolve(new Core.IICamera()).create(35, 1920 / 1080, 0, 1000);
+    var renderer = Container.resolve(new Core.IIRenderer()).create();
+    console.log(camera);
 });
-
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-}

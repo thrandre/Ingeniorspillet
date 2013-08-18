@@ -8,7 +8,7 @@ var App;
 (function (App) {
     (function (Adapters) {
         ///<reference path="../../Typings/Three.d.ts"/>
-        ///<reference path="../../Core/AdapterInterfaces.ts"/>
+        ///<reference path="../../Core/Interfaces.ts"/>
         (function (ThreeAdapter) {
             var Core = App.Core;
 

@@ -1,4 +1,4 @@
-///<reference path="../Core/AdapterInterfaces.ts"/>
+///<reference path="../Core/Interfaces.ts"/>
 
 module App.Game {
 	import Core = App.Core;

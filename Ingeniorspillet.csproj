@@ -18,11 +18,11 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="App\Controllers\BoardController.ts" />
-    <Content Include="App\Core\AdapterInterfaces.ts" />
-    <Content Include="App\Core\Factory.ts" />
-    <Content Include="App\Core\Objects.ts" />
+    <Content Include="App\Core\Interfaces.ts" />
+    <Content Include="App\Core\IoCContainer.ts" />
     <TypeScriptCompile Include="App\Core\Primitives.ts" />
     <Content Include="App\Core\Promise.ts" />
+    <TypeScriptCompile Include="App\Core\Locators.ts" />
     <Content Include="App\Core\Utils.ts" />
     <TypeScriptCompile Include="App\Game\GameEntity.ts" />
     <TypeScriptCompile Include="App\Game\Scene.ts" />

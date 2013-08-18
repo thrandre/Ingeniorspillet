@@ -1,5 +1,5 @@
 ﻿///<reference path="../../Typings/Three.d.ts"/>
-///<reference path="../../Core/AdapterInterfaces.ts"/>
+///<reference path="../../Core/Interfaces.ts"/>
 
 module App.Adapters.ThreeAdapter {
 	import Core = App.Core;
